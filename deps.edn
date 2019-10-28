@@ -1,0 +1,29 @@
+{:paths ["src" "test" "resources"]
+ :deps  {org.clojure/clojure     {:mvn/version "1.10.1"}
+         org.clojure/test.check  {:mvn/version "0.9.0"}
+         org.clojure/spec-alpha2 {:git/url "https://github.com/clojure/spec-alpha2.git"
+                                  :sha     "2a0a7c49c86e31b528be857ed004a4931a0c2551"}
+         reifyhealth/specmonstah {:mvn/version "2.0.0-alpha-2"}
+
+         org.apache.kafka/kafka-clients {:mvn/version "2.3.1"}
+         ch.qos.logback/logback-classic {:exclusions  [org.slf4j/slf4j-api org.slf4j/slf4j-nop]
+                                         :mvn/version "1.2.3"}
+
+         juxt/crux-core    {:mvn/version "RELEASE"}
+         juxt/crux-kafka   {:mvn/version "RELEASE"}
+         juxt/crux-rocksdb {:mvn/version "RELEASE"}
+
+         metosin/pohjavirta      {:mvn/version "0.0.1-alpha5"}
+         metosin/muuntaja        {:mvn/version "0.6.5"}
+         metosin/reitit-core     {:mvn/version "0.3.1"}
+         metosin/reitit-http     {:mvn/version "0.3.1"}
+         metosin/reitit-ring     {:mvn/version "0.3.1"}
+         metosin/reitit-sieppari {:mvn/version "0.3.1"}
+         }
+
+ :aliases
+ {:dev
+  {}
+
+  :test
+  {:extra-deps {lambdaisland/kaocha {:mvn/version "0.0-554"}}}}}
