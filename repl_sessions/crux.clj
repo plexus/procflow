@@ -1,30 +1,46 @@
 (ns crux
   (:require [crux.api :as crux]
             [procflow.data :as data]
+            [procflow.db :as db]
             [clojure.set :as set]))
 
-(def crux-node
-  (crux/start-node {:crux.node/topology :crux.kafka/topology
-                    :crux.node/kv-store 'crux.kv.rocksdb/kv
-                    :crux.kv/db-dir "data/db-dir-1"
-                    :crux.kafka/bootstrap-servers "localhost:9092"}))
+#_(user/go)
 
-(defn map-crux-id [m] (set/rename-keys m {:procflow/id :crux.db/id}))
+(defn node []
+  (:procflow.system/crux (user/system)))
 
+(defn db []
+  (crux/db (node)))
 
+(defn map-crux-id [m]
+  (set/rename-keys m {:procflow/id :crux.db/id}))
 
+#_
 (def tx-res
   (crux/submit-tx crux-node (vec (for [m (data/gen-data {:procedure [[3]]})]
                                    [:crux.tx/put (map-crux-id m)]))))
 
-(crux/q (crux/db crux-node)
-        '{:find [p1 t]
-          :where [[p1 :procflow.procedure/title t]
-                  ]})
-;; => #{[#uuid "39770fa5-9420-4cee-9301-11034597e7fc" "8531AD5b1PbLHl1k1G93"]
-;;      [#uuid "156bafeb-f56e-4b2f-845a-1f80d38df04b" "1ib01Pbl6E10DlTZyfG9"]
-;;      [#uuid "b90ea39a-d6f8-43d0-804c-ec10e43a690a" "dF1J"]}
+(def touch (partial db/touch #{:procflow.procedure/steps
+                               :procflow.procedure/owner}))
 
+(let [component-keys #{:procflow.procedure/steps
+                       :procflow.procedure/owner}
+      db     (db)
+      entity (partial crux/entity db)
+      touch  (partial touch db)]
+  (map (comp touch entity first)
+       (crux/q db
+               '{:find  [p1]
+                 :where [[p1 :procflow.procedure/title t]]})))
+
+(let [db (db)]
+  (->> #uuid "ce20cc92-a55a-4bf7-9282-4df9f4cbb9e2"
+       (crux/entity db)
+       (db/touch #{:procflow.procedure/steps} db)))
+;; => {:procflow.procedure/steps
+;;     [{:procflow.step/type :text,
+;;       :crux.db/id #uuid "f45d3c5d-a911-475f-8271-bd8078d131ec"}],
+;;     :crux.db/id #uuid "ce20cc92-a55a-4bf7-9282-4df9f4cbb9e2"}
 
 (crux/q (crux/db crux-node)
         '{:find [p1 t]

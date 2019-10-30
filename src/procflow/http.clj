@@ -1,37 +1,32 @@
 (ns procflow.http
-  (:require [pohjavirta.server :as server]
-            [reitit.ring :as ring]
+  (:require [reitit.ring :as ring]
             [reitit.http :as http]
-            [reitit.interceptor.sieppari :as sieppari]))
+            [reitit.interceptor.sieppari :as sieppari]
+            [muuntaja.core]
+            [muuntaja.interceptor :as muuntaja]
+            [procflow.interceptor :as interceptor :refer [definterceptor]]
+            [crux.api :as crux]))
 
-(defn interceptor [number]
-  {:enter (fn [ctx] (update-in ctx [:request :number] (fnil + 0) number))})
+(require 'procflow.routes.api :reload)
 
-(def app
-  (http/ring-handler
-   (http/router
-    ["/api"
-     {:interceptors [(interceptor 1)]}
+(defn inject-db-interceptor [crux-node]
+  {:name  ::inject-db
+   :enter (fn [ctx]
+            (assoc ctx
+              :procflow.system/crux crux-node
+              :procflow.system/db (crux/db crux-node)))})
 
-     ["/number"
-      {:interceptors [(interceptor 10)]
-       :get {:interceptors [(interceptor 100)]
-             :handler (fn [req]
-                        {:status 200
-                         :body (select-keys req [:number])})}}]])
+(defn format-negotiation-interceptor []
+  (muuntaja/format-interceptor (assoc muuntaja.core/default-options :return :bytes)))
 
-   ;; the default handler
-   (ring/create-default-handler)
+(defn router [opts]
+  (http/router
+   (:routes opts)
+   {:reitit.interceptor/registry @interceptor/registry}))
 
-   ;; executor
-   {:executor sieppari/executor}))
-
-
-(app {:request-method :get, :uri "/"})
-
-(app {:request-method :get, :uri "/api/number"})
-
-(defonce server
-  (server/create #'app {:host "localhost" :port 2533}))
-
-#_(server/start server)
+(defn handler [opts]
+  (http/ring-handler (router opts)
+                     (ring/create-default-handler)
+                     {:executor     sieppari/executor
+                      :interceptors [(inject-db-interceptor (:crux opts))
+                                     (format-negotiation-interceptor)]}))

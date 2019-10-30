@@ -4,3 +4,4 @@ target
 repl
 scratch.cljkafka_data
 data
+hs_err_pid*

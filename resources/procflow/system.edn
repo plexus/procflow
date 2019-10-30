@@ -1,0 +1,9 @@
+#:procflow.system
+{:crux {:crux.node/topology :crux.kafka/topology
+        :crux.node/kv-store crux.kv.rocksdb/kv
+        :crux.kv/db-dir "data/db-dir-1"
+        :crux.kafka/bootstrap-servers "localhost:9092"}
+
+ :http {:port 2533
+        :crux #ig/ref :procflow.system/crux
+        :routes ["/api/procedure/:id" {:get {:interceptors [:procflow.routes.api/procedure]}}]}}
