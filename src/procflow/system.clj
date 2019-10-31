@@ -15,20 +15,3 @@
 
 (defn config [profile]
   (aero/read-config (io/resource "procflow/system.edn") {:profile profile}))
-
-(defmethod ig/init-key ::crux [_ config]
-  (-> config
-      crux/start-node
-      (with-meta config)))
-
-(defmethod ig/halt-key! ::crux [_ crux]
-  (.close crux))
-
-(defmethod ig/init-key ::http [_ config]
-  (doto (-> config
-            http/handler
-            (pohjavirta/create config))
-    (pohjavirta/start)))
-
-(defmethod ig/halt-key! ::http [_ http]
-  (pohjavirta/stop http))

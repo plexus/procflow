@@ -1,9 +1,14 @@
-#:procflow.system
-{:crux {:crux.node/topology :crux.kafka/topology
-        :crux.node/kv-store crux.kv.rocksdb/kv
-        :crux.kv/db-dir "data/db-dir-1"
-        :crux.kafka/bootstrap-servers "localhost:9092"}
+{:procflow.storage/crux {:crux.node/topology           :crux.kafka/topology
+                         :crux.node/kv-store           crux.kv.rocksdb/kv
+                         :crux.kv/db-dir               "data/db-dir-1"
+                         :crux.kafka/bootstrap-servers "localhost:9092"}
 
- :http {:port 2533
-        :crux #ig/ref :procflow.system/crux
-        :routes ["/api/procedure/:id" {:get {:interceptors [:procflow.routes.api/procedure]}}]}}
+ :procflow.http/router {:routes [["/api/procedure/:id" {:get {:interceptors [:procflow.routes.api/procedure]}}]
+                                 ["/ws" {:websocket {:on-connect procflow.http/on-connect
+                                                     :on-receive procflow.http/on-receive
+                                                     :on-close   procflow.http/on-close
+                                                     :on-error   procflow.http/on-error}}]]}
+
+ :procflow.http/server {:port   2533
+                        :crux   #ig/ref :procflow.storage/crux
+                        :router #ig/ref :procflow.http/router}}

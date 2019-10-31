@@ -3,12 +3,13 @@
 (defmacro jit
   "Just in time loading of dependencies."
   [sym]
-  `(do
-     (require '~(symbol (namespace sym)))
-     (find-var '~sym)))
+  `(requiring-resolve '~sym))
 
 (defn set-prep! []
-  ((jit integrant.repl/set-prep!) #((jit procflow.system/config) :dev)))
+  ((jit integrant.repl/set-prep!)
+   (fn []
+     (doto ((jit procflow.system/config) :dev)
+       ((jit integrant.core/load-namespaces))))))
 
 (defn go []
   (set-prep!)
