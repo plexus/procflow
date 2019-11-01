@@ -1,0 +1,6 @@
+{:deps     {:aliases [:shadow-cljs :ui]}
+ :dev-http {8000 "classpath:public"}
+ :builds   {:ui {:target     :browser
+                 :modules    {:main {:entries [procflow.ui]}}
+                 :output-dir "resources/public/ui"
+                 :asset-path "ui"}}}

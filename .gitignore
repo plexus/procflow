@@ -5,3 +5,6 @@ repl
 scratch.cljkafka_data
 data
 hs_err_pid*
+node_modules
+.shadow-cljs
+resources/public/ui
