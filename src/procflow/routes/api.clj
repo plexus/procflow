@@ -19,3 +19,13 @@
                        UUID/fromString
                        (c/entity db)
                        (touch db))})))
+
+
+(definterceptor ::procedures
+  :enter
+  (fn [{:procflow.system/keys [db] :as ctx}]
+    (assoc ctx :response
+           {:status 200
+            :body
+            (->> (db/q db '{:find [?e] :where [[?e :procflow.procedure/title]]})
+                 (map (comp (partial touch db) (partial db/entity db) first)))})))

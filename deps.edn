@@ -20,8 +20,15 @@
          metosin/reitit-ring     {:mvn/version "0.3.1"}
          metosin/reitit-sieppari {:mvn/version "0.3.1"}
 
-         integrant                   {:mvn/version "0.7.0"}
-         aero                        {:mvn/version "1.1.3"}
+         integrant {:mvn/version "0.7.0"}
+         aero      {:mvn/version "1.1.3"}
+
+         metosin/malli     {:git/url "https://github.com/metosin/malli"
+                            :sha     "9614d59cd738191b495d6706f73ed2a761bd3ef7"}
+         mvxcvi/alphabase  {:mvn/version "2.1.0"}
+         danlentz/clj-uuid {:mvn/version "0.1.7"}
+         meander/epsilon   {:mvn/version "0.0.314"}
+         expound           {:mvn/version "0.7.2"}
          }
 
  :aliases
@@ -33,7 +40,13 @@
   {:extra-deps {lambdaisland/kaocha {:mvn/version "0.0-554"}}}
 
   :ui
-  {:extra-deps {reagent {:mvn/version "RELEASE"}}}
+  {:extra-deps {reagent    {:mvn/version "0.9.0-rc2"}
+                re-frame   {:mvn/version "0.11.0-rc2"}
+                re-posh    {:mvn/version "0.3.1"}
+                datascript {:mvn/version "0.18.7"}}}
 
   :shadow-cljs
-  {:extra-deps {thheller/shadow-cljs {:mvn/version "RELEASE"}}}}}
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.8.69"}}}
+
+  :watch-cljs
+  {:main-opts ["-m" "shadow.cljs.devtools.cli" "watch" "ui"]}}}

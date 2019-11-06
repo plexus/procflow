@@ -3,4 +3,5 @@
  :builds   {:ui {:target     :browser
                  :modules    {:main {:entries [procflow.ui]}}
                  :output-dir "resources/public/ui"
-                 :asset-path "ui"}}}
+                 :asset-path "ui"
+                 :devtools   {:repl-pprint true}}}}

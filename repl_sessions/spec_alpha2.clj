@@ -1,4 +1,4 @@
-(ns procflow.data
+(ns repl-sessions.spec-alpha2
   (:require [clojure.spec-alpha2 :as s]
             [clojure.test.check.generators :as gen]
             [reifyhealth.specmonstah.core :as sm]

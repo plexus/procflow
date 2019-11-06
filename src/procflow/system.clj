@@ -1,13 +1,7 @@
 (ns procflow.system
-  (:require [clojure.java.io :as io]
-            [integrant.core :as ig]
-
-            [procflow.http :as http]
-
-            [integrant.core :as integrant]
-            [aero.core :as aero]
-            [crux.api :as crux]
-            [pohjavirta.server :as pohjavirta]))
+  (:require [aero.core :as aero]
+            [clojure.java.io :as io]
+            [integrant.core :as integrant]))
 
 (defmethod aero/reader 'ig/ref
   [_ tag value]

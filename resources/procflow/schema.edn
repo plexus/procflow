@@ -1,0 +1,12 @@
+{:procflow/procedure {:attrs
+                      {:procflow.procedure/title string?}
+                      :rels
+                      {:procflow.procedure/owner :procflow/user
+                       :procflow.procedure/steps [:procflow/step]}}
+
+ :procflow/user {:attrs
+                 {:procflow.user/identity [:and string?
+                                           [:fn (fn [s] (< 2 (count s)))]]}}
+
+ :procflow/step {:attrs
+                 {:procflow.step/type [:enum :text]}}}

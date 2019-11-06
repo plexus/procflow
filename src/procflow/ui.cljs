@@ -1,6 +1,6 @@
 (ns procflow.ui
+  (:require-macros [procflow.ui-macros :refer [datascript-schema]])
   (:require [reagent.core :as r]
-            ["@material-ui/core/styles" :refer [makeStyles]]
             [procflow.ui.components :refer [Button
                                             CssBaseline
                                             AppBar
@@ -11,11 +11,17 @@
                                             List
                                             ListItem
                                             ListItemText
-                                            MenuIcon]]))
+                                            MenuIcon]]
+            [datascript.core :as d]
+            [re-posh.core :as posh]))
+
 
 (set! *warn-on-infer* true)
 
 (def state (r/atom {}))
+
+(def conn (d/create-conn (datascript-schema)))
+(posh/connect! conn)
 
 (defn main []
   (js/console.log (pr-str @state))
